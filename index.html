@@ -46,38 +46,46 @@
     }
 
     /* soft snow layer */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(2px 2px at 20% 10%, rgba(255,255,255,0.7) 0, transparent 60%),
-        radial-gradient(3px 3px at 80% 30%, rgba(255,255,255,0.8) 0, transparent 60%),
-        radial-gradient(2px 2px at 50% 70%, rgba(255,255,255,0.6) 0, transparent 60%);
-      background-repeat: repeat;
-      opacity: 0.75;
-      animation: snow 20s linear infinite;
-      z-index: 0;
-    }
+ /* ❄️ Bigger, more visible snow that falls over the whole page */
+/* dark overlay + slight blur so card is readable */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  z-index: 0;   /* background overlay */
+}
 
-    @keyframes snow {
-      0%   { transform: translateY(-10px); }
-      100% { transform: translateY(30px); }
-    }
+/* ❄️ Bigger, more visible snow that falls over the whole page */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(4px 4px at 10% 20%, rgba(255,255,255,0.95) 0, transparent 60%),
+    radial-gradient(3px 3px at 30% 80%, rgba(255,255,255,0.9) 0, transparent 60%),
+    radial-gradient(4px 4px at 70% 10%, rgba(255,255,255,0.85) 0, transparent 60%),
+    radial-gradient(3px 3px at 90% 60%, rgba(255,255,255,0.9) 0, transparent 60%);
+  background-repeat: repeat;
+  opacity: 0.9;
+  animation: snow 12s linear infinite;
+  z-index: 1;   /* snow behind the card */
+}
 
-    .card {
-      position: relative;
-      z-index: 1;
-      background: linear-gradient(145deg, #ffffff, #fff7f7);
-      padding: 28px 24px 32px;
-      border-radius: 24px;
-      max-width: 520px;
-      width: 100%;
-      box-shadow: 0 20px 55px rgba(0,0,0,0.45);
-      border: 2px solid #fecaca;
-    }
-
+/* the card itself */
+.card {
+  position: relative;
+  z-index: 2;   /* card above snow */
+  background: linear-gradient(145deg, #ffffff, #fff7f7);
+  padding: 28px 24px 32px;
+  border-radius: 24px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 20px 55px rgba(0,0,0,0.45);
+  border: 2px solid #fecaca;
+}
     .title-row {
       display: flex;
       align-items: center;
@@ -99,12 +107,13 @@
       text-transform: uppercase;
     }
 
-    .subtitle {
-      margin: 4px 0 16px;
-      font-size: 0.95rem;
-      color: #e5e7eb;
-      text-align: center;
-    }
+.subtitle {
+  margin: 4px 0 16px;
+  font-size: 0.95rem;
+  color: #374151;   /* dark grey, readable */
+  text-align: center;
+}
+
 
     .subtitle strong {
       color: #facc15;
@@ -194,8 +203,12 @@
       margin: 10px 0 2px;
       text-align: center;
     }
-    .status.error { color: #fecaca; }
-    .status.success { color: #bbf7d0; }
+.status.error {
+  color: #b91c1c;   /* dark red */
+}
+.status.success {
+  color: #16a34a;   /* dark green */
+}
 
     .wheel-section {
       margin-top: 18px;
@@ -265,12 +278,13 @@
       cursor: not-allowed;
     }
 
-    .note {
-      font-size: 0.78rem;
-      color: #e5e7eb;
-      margin-top: 8px;
-      text-align: center;
-    }
+.note {
+  font-size: 0.78rem;
+  color: #4b5563;  /* medium grey */
+  margin-top: 8px;
+  text-align: center;
+}
+
 
     .result-box {
       margin-top: 20px;
