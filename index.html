@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secret Santa Spin</title>
 
+  <!-- Cute rounded font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -16,19 +21,48 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at top, #ffe5e5 0, #ffeef7 40%, #fdf5f5 100%);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #111827;
+      background: radial-gradient(circle at top, #ffe5e5 0, #ffeef7 40%, #fdf5f5 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Soft animated snow background */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.7) 0, transparent 60%),
+        radial-gradient(3px 3px at 80% 30%, rgba(255,255,255,0.8) 0, transparent 60%),
+        radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.6) 0, transparent 60%);
+      background-repeat: repeat;
+      opacity: 0.7;
+      animation: snow 18s linear infinite;
+      z-index: 0;
+    }
+    body::after {
+      animation-duration: 28s;
+      opacity: 0.4;
+    }
+
+    @keyframes snow {
+      0% { transform: translateY(-10px); }
+      100% { transform: translateY(40px); }
     }
 
     .card {
-      background: #ffffff;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(145deg, #ffffff, #fff7f7);
       padding: 28px 24px 32px;
-      border-radius: 20px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-      max-width: 480px;
+      border-radius: 24px;
+      max-width: 520px;
       width: 100%;
-      text-align: center;
+      box-shadow: 0 20px 55px rgba(148,27,48,0.28);
       border: 2px solid #fecaca;
     }
 
@@ -37,70 +71,31 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .title-row span.icon {
-      font-size: 28px;
+      font-size: 30px;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
     }
 
     h1 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       color: #b91c1c;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
     }
 
     .subtitle {
       margin: 4px 0 16px;
-      font-size: 0.9rem;
-      color: #4b5563;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #111827;
-    }
-
-    input[type="email"] {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
       font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      color: #4b5563;
+      text-align: center;
     }
 
-    input[type="email"]:focus {
-      border-color: #16a34a;
-      box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
-    }
-
-    .hint {
-      text-align: left;
-      font-size: 0.8rem;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-
-    .status {
-      min-height: 18px;
-      font-size: 0.85rem;
-      margin: 10px 0 2px;
-    }
-
-    .status.error {
+    .subtitle strong {
       color: #b91c1c;
-    }
-
-    .status.success {
-      color: #15803d;
     }
 
     .top-row {
@@ -110,8 +105,42 @@
       align-items: center;
     }
 
-    .top-row .input-wrap {
+    .input-wrap {
       flex: 1;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.06s;
+      background: #f9fafb;
+    }
+
+    input[type="email"]:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 2px rgba(22,163,74,0.28);
+      transform: translateY(-1px);
+      background: #ffffff;
+    }
+
+    .hint {
+      text-align: left;
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 2px;
     }
 
     button {
@@ -121,7 +150,8 @@
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      transition: background 0.18s, transform 0.08s, box-shadow 0.18s;
+      font-family: inherit;
     }
 
     button:active {
@@ -130,9 +160,14 @@
     }
 
     .btn-primary {
-      background: #16a34a;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
       color: #ffffff;
-      box-shadow: 0 4px 10px rgba(22,163,74,0.4);
+      box-shadow: 0 6px 14px rgba(21,128,61,0.45);
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #16a34a, #15803d);
     }
 
     .btn-primary:disabled {
@@ -141,8 +176,20 @@
       cursor: not-allowed;
     }
 
+    .status {
+      min-height: 18px;
+      font-size: 0.85rem;
+      margin: 10px 0 2px;
+      text-align: center;
+    }
+    .status.error { color: #b91c1c; }
+    .status.success { color: #15803d; }
+
     .wheel-section {
-      margin-top: 16px;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .pointer {
@@ -150,16 +197,17 @@
       height: 0;
       border-left: 12px solid transparent;
       border-right: 12px solid transparent;
-      border-bottom: 22px solid #dc2626;
-      margin: 0 auto 6px;
+      border-bottom: 24px solid #dc2626;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.35));
     }
 
     #wheel {
-      width: 220px;
-      height: 220px;
-      margin: 0 auto 12px;
+      width: 240px;
+      height: 240px;
       border-radius: 50%;
-      border: 8px solid #0f172a;
+      margin: 0 auto 14px;
+      border: 10px solid #0f172a;
       background: conic-gradient(
         #f97373 0deg 72deg,
         #fb923c 72deg 144deg,
@@ -167,21 +215,37 @@
         #22c55e 216deg 288deg,
         #38bdf8 288deg 360deg
       );
+      box-shadow:
+        0 16px 26px rgba(15,23,42,0.5),
+        inset 0 0 20px rgba(0,0,0,0.35);
       transition: transform 4s cubic-bezier(0.22, 0.61, 0.36, 1);
-      box-shadow: 0 10px 25px rgba(15,23,42,0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle highlight circle in center */
+    #wheel::after {
+      content: "";
+      position: absolute;
+      inset: 26%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0, transparent 60%);
+      pointer-events: none;
     }
 
     .spin-btn-wrap {
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
     .btn-spin {
-      background: #b91c1c;
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
       color: #fef9c3;
-      padding-inline: 26px;
-      box-shadow: 0 4px 12px rgba(185,28,28,0.45);
+      padding-inline: 32px;
+      box-shadow: 0 6px 16px rgba(185,28,28,0.55);
     }
-
+    .btn-spin:hover:not(:disabled) {
+      background: linear-gradient(135deg, #991b1b, #dc2626);
+    }
     .btn-spin:disabled {
       background: #9ca3af;
       box-shadow: none;
@@ -189,19 +253,31 @@
     }
 
     .note {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #6b7280;
-      margin-top: 6px;
+      margin-top: 8px;
+      text-align: center;
     }
 
     .result-box {
-      margin-top: 18px;
-      padding: 14px 14px 12px;
-      border-radius: 14px;
+      margin-top: 20px;
+      padding: 16px 16px 14px;
+      border-radius: 16px;
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
       text-align: left;
       display: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-box::before {
+      content: "🎁";
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.15;
+      right: 12px;
+      top: 12px;
     }
 
     .result-box h2 {
@@ -228,9 +304,37 @@
       color: #374151;
     }
 
-    @media (max-width: 520px) {
+    /* Confetti */
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 14px;
+      background: #f97373;
+      top: -20px;
+      border-radius: 2px;
+      opacity: 0.9;
+      z-index: 999;
+      pointer-events: none;
+      animation: confetti-fall linear forwards;
+    }
+
+    @keyframes confetti-fall {
+      0%   { transform: translate3d(0, 0, 0) rotateZ(0deg); }
+      100% { transform: translate3d(var(--x-move), 105vh, 0) rotateZ(720deg); }
+    }
+
+    @media (max-width: 560px) {
       .card {
         margin: 12px;
+        padding-inline: 18px;
+      }
+      h1 {
+        font-size: 1.45rem;
+      }
+      #wheel {
+        width: 210px;
+        height: 210px;
       }
     }
   </style>
@@ -243,7 +347,7 @@
       <span class="icon">🎄</span>
     </div>
     <p class="subtitle">
-      Enter your email, then spin to reveal <strong>one secret person</strong> and their 3 gift wishes.
+      Enter your email, then spin to reveal <strong>one secret person</strong> and their <strong>3 gift wishes</strong>.
     </p>
 
     <div class="top-row">
@@ -264,7 +368,7 @@
         <button id="spinBtn" class="btn-spin" disabled>Spin 🎁</button>
       </div>
       <div class="note">
-        The colourful wheel is for fun — the actual person is randomly chosen from everyone who filled the form.
+        The colourful wheel is just for fun — the actual person is randomly chosen from everyone who filled the form.
       </div>
     </div>
 
@@ -273,7 +377,7 @@
 
   <script>
     // 🔗 Replace this with your real Apps Script URL
-    const APP_URL = "https://script.google.com/macros/s/AKfycbxMBCmqgAdaj0EHujj_Y6I2Oqt7Pm5Qgp_2suiuK0JxpzOJcUcOZRDsBw7Vz413HerO/exec";
+    const APP_URL = "YOUR_WEB_APP_URL_HERE";
 
     let backendResponse = null;
     let spinning = false;
@@ -291,52 +395,69 @@
       if (type) statusEl.classList.add(type);
     }
 
+    // 🎉 Simple confetti
+    function launchConfetti() {
+      const colors = ["#f97373","#fb923c","#facc15","#22c55e","#38bdf8","#e879f9"];
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
+        const left = Math.random() * 100;        // vw
+        const xMove = (Math.random() * 40 - 20) + "vw";
+        el.style.left = left + "vw";
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.animationDuration = (5 + Math.random() * 3) + "s";
+        el.style.setProperty("--x-move", xMove);
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 8000);
+      }
+    }
+
     startBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim().toLowerCase();
-  resultBox.style.display = "none";
-  resultBox.innerHTML = "";
+      const email = emailInput.value.trim().toLowerCase();
+      resultBox.style.display = "none";
+      resultBox.innerHTML = "";
 
-  if (!email) {
-    setStatus("Please enter your email address.", "error");
-    return;
-  }
+      if (!email) {
+        setStatus("Please enter your email address.", "error");
+        return;
+      }
 
-  setStatus("Checking your email with Santa's list… 🎅", "");
-  startBtn.disabled = true;
-  spinBtn.disabled = true;
-
-  try {
-    const res = await fetch(APP_URL + "?email=" + encodeURIComponent(email));
-    const data = await res.json();
-    console.log("API response:", data);
-    backendResponse = data;
-
-    // If API sends {success:false,...} use that
-    // If it doesn't send "success" at all, assume it's OK
-    const ok = (data.success === undefined) ? true : data.success;
-
-    if (!ok) {
-      setStatus(data.error || "Something went wrong.", "error");
-      startBtn.disabled = false;
-      return;
-    }
-
-    if (data.alreadySpun) {
-      setStatus("You have already spun earlier. Showing your result again.", "error");
-      showResult(data);
-      startBtn.disabled = false;
+      setStatus("Checking your email with Santa's list… 🎅", "");
+      startBtn.disabled = true;
       spinBtn.disabled = true;
-    } else {
-      setStatus("Email confirmed ✅ You can spin once.", "success");
-      spinBtn.disabled = false;
-      startBtn.disabled = false;
-    }
-  } catch (err) {
-    console.error(err);
-    setStatus("Network error. Please try again.", "error");
-    startBtn.disabled = false;
-  }
-});
+
+      try {
+        const res = await fetch(APP_URL + "?email=" + encodeURIComponent(email));
+        const data = await res.json();
+        console.log("API response:", data);
+        backendResponse = data;
+
+        // If API doesn't send "success", treat as OK
+        const ok = (data.success === undefined) ? true : data.success;
+
+        if (!ok) {
+          setStatus(data.error || "Something went wrong.", "error");
+          startBtn.disabled = false;
+          return;
+        }
+
+        if (data.alreadySpun) {
+          setStatus("You have already spun earlier. Showing your result again.", "error");
+          showResult(data, false);
+          startBtn.disabled = false;
+          spinBtn.disabled = true;
+        } else {
+          setStatus("Email confirmed ✅ You can spin once.", "success");
+          spinBtn.disabled = false;
+          startBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus("Network error. Please try again.", "error");
+        startBtn.disabled = false;
+      }
+    });
 
     spinBtn.addEventListener("click", () => {
       if (!backendResponse || backendResponse.alreadySpun) return;
@@ -354,11 +475,11 @@
       setTimeout(() => {
         spinning = false;
         setStatus("Your Secret Santa match is revealed below! ✨", "success");
-        showResult(backendResponse);
+        showResult(backendResponse, true);
       }, 4100);
     });
 
-    function showResult(data) {
+    function showResult(data, doConfetti) {
       if (!data || !data.receiverName) return;
 
       const wishes = data.wishes || ["", "", ""];
@@ -375,8 +496,11 @@
         </ul>
         <p>Keep this completely secret 🤫 and choose something thoughtful from their list!</p>
       `;
+
+      if (doConfetti) {
+        launchConfetti();
+      }
     }
   </script>
 </body>
 </html>
-
