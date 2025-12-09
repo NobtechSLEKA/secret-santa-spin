@@ -292,46 +292,51 @@
     }
 
     startBtn.addEventListener("click", async () => {
-      const email = emailInput.value.trim().toLowerCase();
-      resultBox.style.display = "none";
-      resultBox.innerHTML = "";
+  const email = emailInput.value.trim().toLowerCase();
+  resultBox.style.display = "none";
+  resultBox.innerHTML = "";
 
-      if (!email) {
-        setStatus("Please enter your email address.", "error");
-        return;
-      }
+  if (!email) {
+    setStatus("Please enter your email address.", "error");
+    return;
+  }
 
-      setStatus("Checking your email with Santa's list… 🎅", "");
-      startBtn.disabled = true;
+  setStatus("Checking your email with Santa's list… 🎅", "");
+  startBtn.disabled = true;
+  spinBtn.disabled = true;
+
+  try {
+    const res = await fetch(APP_URL + "?email=" + encodeURIComponent(email));
+    const data = await res.json();
+    console.log("API response:", data);
+    backendResponse = data;
+
+    // If API sends {success:false,...} use that
+    // If it doesn't send "success" at all, assume it's OK
+    const ok = (data.success === undefined) ? true : data.success;
+
+    if (!ok) {
+      setStatus(data.error || "Something went wrong.", "error");
+      startBtn.disabled = false;
+      return;
+    }
+
+    if (data.alreadySpun) {
+      setStatus("You have already spun earlier. Showing your result again.", "error");
+      showResult(data);
+      startBtn.disabled = false;
       spinBtn.disabled = true;
-
-      try {
-        const res = await fetch(APP_URL + "?email=" + encodeURIComponent(email));
-        const data = await res.json();
-        backendResponse = data;
-
-        if (!data.success) {
-          setStatus(data.error || "Something went wrong.", "error");
-          startBtn.disabled = false;
-          return;
-        }
-
-        if (data.alreadySpun) {
-          setStatus("You have already spun earlier. Showing your result again.", "error");
-          showResult(data);
-          startBtn.disabled = false;
-          spinBtn.disabled = true;
-        } else {
-          setStatus("Email confirmed ✅ You can spin once.", "success");
-          spinBtn.disabled = false;
-          startBtn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        setStatus("Network error. Please try again.", "error");
-        startBtn.disabled = false;
-      }
-    });
+    } else {
+      setStatus("Email confirmed ✅ You can spin once.", "success");
+      spinBtn.disabled = false;
+      startBtn.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus("Network error. Please try again.", "error");
+    startBtn.disabled = false;
+  }
+});
 
     spinBtn.addEventListener("click", () => {
       if (!backendResponse || backendResponse.alreadySpun) return;
