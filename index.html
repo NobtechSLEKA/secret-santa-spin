@@ -1,183 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Secret Santa Spin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secret Santa Spin</title>
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #fdf2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.container {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  max-width: 450px;
-  width: 100%;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  text-align: center;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #ffe5e5 0, #ffeef7 40%, #fdf5f5 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+    }
 
-h1 {
-  margin-top: 0;
-  font-size: 24px;
-  color: #d62828;
-}
+    .card {
+      background: #ffffff;
+      padding: 28px 24px 32px;
+      border-radius: 20px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      border: 2px solid #fecaca;
+    }
 
-label {
-  font-weight: bold;
-}
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
 
-input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 12px;
-}
+    .title-row span.icon {
+      font-size: 28px;
+    }
 
-button {
-  padding: 10px 20px;
-  background: #2a9d8f;
-  color: white;
-  border: none;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #b91c1c;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
 
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
-}
+    .subtitle {
+      margin: 4px 0 16px;
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
 
-#wheel {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  margin: 20px auto;
-  border: 8px solid #264653;
-  background: conic-gradient(#e63946, #f4a261, #2a9d8f, #e9c46a, #e76f51);
-  transition: transform 4s ease-out;
-}
+    label {
+      display: block;
+      text-align: left;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111827;
+    }
 
-.pointer {
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 20px solid #d62828;
-  margin: 0 auto;
-}
-.result-box {
-  margin-top: 20px;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 10px;
-  display: none;
-}
-.result-box ul {
-  text-align: left;
-}
-</style>
+    input[type="email"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="email"]:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
+    }
+
+    .hint {
+      text-align: left;
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .status {
+      min-height: 18px;
+      font-size: 0.85rem;
+      margin: 10px 0 2px;
+    }
+
+    .status.error {
+      color: #b91c1c;
+    }
+
+    .status.success {
+      color: #15803d;
+    }
+
+    .top-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .top-row .input-wrap {
+      flex: 1;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(22,163,74,0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .wheel-section {
+      margin-top: 16px;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 22px solid #dc2626;
+      margin: 0 auto 6px;
+    }
+
+    #wheel {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      border: 8px solid #0f172a;
+      background: conic-gradient(
+        #f97373 0deg 72deg,
+        #fb923c 72deg 144deg,
+        #facc15 144deg 216deg,
+        #22c55e 216deg 288deg,
+        #38bdf8 288deg 360deg
+      );
+      transition: transform 4s cubic-bezier(0.22, 0.61, 0.36, 1);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.45);
+    }
+
+    .spin-btn-wrap {
+      margin-top: 8px;
+    }
+
+    .btn-spin {
+      background: #b91c1c;
+      color: #fef9c3;
+      padding-inline: 26px;
+      box-shadow: 0 4px 12px rgba(185,28,28,0.45);
+    }
+
+    .btn-spin:disabled {
+      background: #9ca3af;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    .result-box {
+      margin-top: 18px;
+      padding: 14px 14px 12px;
+      border-radius: 14px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      text-align: left;
+      display: none;
+    }
+
+    .result-box h2 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      color: #166534;
+    }
+
+    .result-box h3 {
+      margin: 4px 0 8px;
+      font-size: 1rem;
+      color: #14532d;
+    }
+
+    .result-box ul {
+      margin: 4px 0 6px 18px;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+
+    .result-box p {
+      margin: 4px 0 0;
+      font-size: 0.8rem;
+      color: #374151;
+    }
+
+    @media (max-width: 520px) {
+      .card {
+        margin: 12px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
-  <h1>🎅 Secret Santa Spin 🎄</h1>
+  <div class="card">
+    <div class="title-row">
+      <span class="icon">🎅</span>
+      <h1>Secret Santa Spin</h1>
+      <span class="icon">🎄</span>
+    </div>
+    <p class="subtitle">
+      Enter your email, then spin to reveal <strong>one secret person</strong> and their 3 gift wishes.
+    </p>
 
-  <label>Enter your company email:</label>
-  <input type="email" id="email" placeholder="you@company.com" />
+    <div class="top-row">
+      <div class="input-wrap">
+        <label for="email">Your company email</label>
+        <input type="email" id="email" placeholder="you@company.com" />
+        <div class="hint">Use the same email you used in the gift wish form.</div>
+      </div>
+      <button id="startBtn" class="btn-primary">Start</button>
+    </div>
 
-  <button id="startBtn">Start</button>
+    <div id="status" class="status"></div>
 
-  <div class="pointer"></div>
-  <div id="wheel"></div>
+    <div class="wheel-section">
+      <div class="pointer"></div>
+      <div id="wheel"></div>
+      <div class="spin-btn-wrap">
+        <button id="spinBtn" class="btn-spin" disabled>Spin 🎁</button>
+      </div>
+      <div class="note">
+        The colourful wheel is for fun — the actual person is randomly chosen from everyone who filled the form.
+      </div>
+    </div>
 
-  <button id="spinBtn" disabled>Spin 🎁</button>
+    <div id="resultBox" class="result-box"></div>
+  </div>
 
-  <div class="result-box" id="resultBox"></div>
-</div>
+  <script>
+    // 🔗 Replace this with your real Apps Script URL
+    const APP_URL = "YOUR_WEB_APP_URL_HERE";
 
-<script>
-const APP_URL = "https://script.google.com/macros/s/AKfycbxMBCmqgAdaj0EHujj_Y6I2Oqt7Pm5Qgp_2suiuK0JxpzOJcUcOZRDsBw7Vz413HerO/exec"; // <-- Replace with your real URL
+    let backendResponse = null;
+    let spinning = false;
 
-let currentEmail = null;
-let backendResponse = null;
+    const emailInput = document.getElementById("email");
+    const startBtn = document.getElementById("startBtn");
+    const spinBtn = document.getElementById("spinBtn");
+    const statusEl = document.getElementById("status");
+    const wheel = document.getElementById("wheel");
+    const resultBox = document.getElementById("resultBox");
 
-document.getElementById("startBtn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  if (!email) {
-    alert("Please enter your email.");
-    return;
-  }
-
-  currentEmail = email;
-
-  let url = APP_URL + "?email=" + encodeURIComponent(email);
-
-  try {
-    let res = await fetch(url);
-    let data = await res.json();
-    backendResponse = data;
-
-    if (!data.success && data.error) {
-      alert(data.error);
-      return;
+    function setStatus(msg, type) {
+      statusEl.textContent = msg || "";
+      statusEl.className = "status";
+      if (type) statusEl.classList.add(type);
     }
 
-    if (data.alreadySpun) {
-      showResult(data);
-      document.getElementById("spinBtn").disabled = true;
-    } else {
-      document.getElementById("spinBtn").disabled = false;
+    startBtn.addEventListener("click", async () => {
+      const email = emailInput.value.trim().toLowerCase();
+      resultBox.style.display = "none";
+      resultBox.innerHTML = "";
+
+      if (!email) {
+        setStatus("Please enter your email address.", "error");
+        return;
+      }
+
+      setStatus("Checking your email with Santa's list… 🎅", "");
+      startBtn.disabled = true;
+      spinBtn.disabled = true;
+
+      try {
+        const res = await fetch(APP_URL + "?email=" + encodeURIComponent(email));
+        const data = await res.json();
+        backendResponse = data;
+
+        if (!data.success) {
+          setStatus(data.error || "Something went wrong.", "error");
+          startBtn.disabled = false;
+          return;
+        }
+
+        if (data.alreadySpun) {
+          setStatus("You have already spun earlier. Showing your result again.", "error");
+          showResult(data);
+          startBtn.disabled = false;
+          spinBtn.disabled = true;
+        } else {
+          setStatus("Email confirmed ✅ You can spin once.", "success");
+          spinBtn.disabled = false;
+          startBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus("Network error. Please try again.", "error");
+        startBtn.disabled = false;
+      }
+    });
+
+    spinBtn.addEventListener("click", () => {
+      if (!backendResponse || backendResponse.alreadySpun) return;
+      if (spinning) return;
+
+      spinning = true;
+      spinBtn.disabled = true;
+      setStatus("Spinning the wheel… 🎁", "");
+
+      const extra = Math.floor(Math.random() * 360);
+      const total = 1440 + extra; // 4 full spins + random
+
+      wheel.style.transform = `rotate(${total}deg)`;
+
+      setTimeout(() => {
+        spinning = false;
+        setStatus("Your Secret Santa match is revealed below! ✨", "success");
+        showResult(backendResponse);
+      }, 4100);
+    });
+
+    function showResult(data) {
+      if (!data || !data.receiverName) return;
+
+      const wishes = data.wishes || ["", "", ""];
+
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <h2>🎁 Your person:</h2>
+        <h3>${data.receiverName}</h3>
+        <p><strong>Their 3 gift wishes:</strong></p>
+        <ul>
+          <li>${wishes[0] || "(no wish given)"}</li>
+          <li>${wishes[1] || "(no wish given)"}</li>
+          <li>${wishes[2] || "(no wish given)"}</li>
+        </ul>
+        <p>Keep this completely secret 🤫 and choose something thoughtful from their list!</p>
+      `;
     }
-
-  } catch (err) {
-    alert("Network error. Try again.");
-    console.error(err);
-  }
-});
-
-document.getElementById("spinBtn").addEventListener("click", () => {
-  let wheel = document.getElementById("wheel");
-
-  let randomDeg = 720 + Math.floor(Math.random() * 360);
-  wheel.style.transform = `rotate(${randomDeg}deg)`;
-
-  setTimeout(() => {
-    showResult(backendResponse);
-    document.getElementById("spinBtn").disabled = true;
-  }, 4200);
-});
-
-function showResult(data) {
-  let box = document.getElementById("resultBox");
-  box.style.display = "block";
-
-  box.innerHTML = `
-    <h2>Your Secret Santa Person 🎁</h2>
-    <h3>${data.receiverName}</h3>
-
-    <p><strong>Their 3 gift wishes:</strong></p>
-    <ul>
-      <li>${data.wishes[0]}</li>
-      <li>${data.wishes[1]}</li>
-      <li>${data.wishes[2]}</li>
-    </ul>
-
-    <p><em>Keep it secret 🤫 and choose something thoughtful!</em></p>
-  `;
-}
-</script>
-
+  </script>
 </body>
 </html>
+
