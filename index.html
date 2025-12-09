@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Secret Santa Spin</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fdf2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #d62828;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
+}
+
+button {
+  padding: 10px 20px;
+  background: #2a9d8f;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+#wheel {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  margin: 20px auto;
+  border: 8px solid #264653;
+  background: conic-gradient(#e63946, #f4a261, #2a9d8f, #e9c46a, #e76f51);
+  transition: transform 4s ease-out;
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid #d62828;
+  margin: 0 auto;
+}
+.result-box {
+  margin-top: 20px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+}
+.result-box ul {
+  text-align: left;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🎅 Secret Santa Spin 🎄</h1>
+
+  <label>Enter your company email:</label>
+  <input type="email" id="email" placeholder="you@company.com" />
+
+  <button id="startBtn">Start</button>
+
+  <div class="pointer"></div>
+  <div id="wheel"></div>
+
+  <button id="spinBtn" disabled>Spin 🎁</button>
+
+  <div class="result-box" id="resultBox"></div>
+</div>
+
+<script>
+const APP_URL = "https://script.google.com/macros/s/AKfycbxMBCmqgAdaj0EHujj_Y6I2Oqt7Pm5Qgp_2suiuK0JxpzOJcUcOZRDsBw7Vz413HerO/exec"; // <-- Replace with your real URL
+
+let currentEmail = null;
+let backendResponse = null;
+
+document.getElementById("startBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  if (!email) {
+    alert("Please enter your email.");
+    return;
+  }
+
+  currentEmail = email;
+
+  let url = APP_URL + "?email=" + encodeURIComponent(email);
+
+  try {
+    let res = await fetch(url);
+    let data = await res.json();
+    backendResponse = data;
+
+    if (!data.success && data.error) {
+      alert(data.error);
+      return;
+    }
+
+    if (data.alreadySpun) {
+      showResult(data);
+      document.getElementById("spinBtn").disabled = true;
+    } else {
+      document.getElementById("spinBtn").disabled = false;
+    }
+
+  } catch (err) {
+    alert("Network error. Try again.");
+    console.error(err);
+  }
+});
+
+document.getElementById("spinBtn").addEventListener("click", () => {
+  let wheel = document.getElementById("wheel");
+
+  let randomDeg = 720 + Math.floor(Math.random() * 360);
+  wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+  setTimeout(() => {
+    showResult(backendResponse);
+    document.getElementById("spinBtn").disabled = true;
+  }, 4200);
+});
+
+function showResult(data) {
+  let box = document.getElementById("resultBox");
+  box.style.display = "block";
+
+  box.innerHTML = `
+    <h2>Your Secret Santa Person 🎁</h2>
+    <h3>${data.receiverName}</h3>
+
+    <p><strong>Their 3 gift wishes:</strong></p>
+    <ul>
+      <li>${data.wishes[0]}</li>
+      <li>${data.wishes[1]}</li>
+      <li>${data.wishes[2]}</li>
+    </ul>
+
+    <p><em>Keep it secret 🤫 and choose something thoughtful!</em></p>
+  `;
+}
+</script>
+
+</body>
+</html>
